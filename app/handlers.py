@@ -1,3 +1,4 @@
+#Хэндлеры
 from aiogram.client import bot
 from dotenv import load_dotenv
 import os
@@ -31,8 +32,8 @@ async def chat_join_requests(chat_join: ChatJoinRequest):
     msg2 = 'Список доступных комманд:\n\n' \
            '/auth - Авторизация\n/rules - правила клана\n/info - информация о боте'
 
-    await bot.send_message(chat_id=chat_join.user_chat_id, text=msg)
-    await bot.send_message(chat_id=chat_join.user_chat_id, text=msg2)
+    await bot.send_message(chat_id=chat_join.user_chat_id, text=msg) #Отправка сообщения не срабатывает!!!
+    await bot.send_message(chat_id=chat_join.user_chat_id, text=msg2) #Отправка сообщения не срабатывает!!!
 
 @router.message(CommandStart())
 async def auth(message: Message, state: FSMContext):
