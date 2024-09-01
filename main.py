@@ -16,6 +16,7 @@ from app.handlers import router
 async def start():
     await async_main()
     await update_database()
+
     print('Бот успешно включился. \nНачинаю логгирование:')
     time.sleep(0.3)
     logging.basicConfig(level=logging.DEBUG,
