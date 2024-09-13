@@ -1,7 +1,11 @@
 from aiogram import Router, Bot, types, F
 
 from aiogram.fsm.context import FSMContext
+
 from aiogram.filters import Command, CommandStart
+from aiogram.filters import IS_MEMBER, IS_NOT_MEMBER, ChatMemberUpdatedFilter
+
+from aiogram.types import ChatMemberUpdated
 
 from sqlalchemy import select
 
@@ -10,6 +14,10 @@ from app.states import Reg
 
 router = Router()
 
+@router.chat_member(ChatMemberUpdatedFilter(IS_NOT_MEMBER >> IS_MEMBER))
+async def new_member(event: ChatMemberUpdated, bot: Bot):
+    await event.answer(f"<b>Привет, {event.new_chat_member.user.first_name}!</b>",
+                       parse_mode='HTML')
 
 @router.chat_join_request(F.chat.id == -1002216392125)
 async def requests(chat_join: types.ChatJoinRequest, bot: Bot):
@@ -59,11 +67,14 @@ async def auth(message: types.Message, state: FSMContext):
 @router.message(F.text, Reg.name)
 async def auth_step_two(message: types.Message, state: FSMContext, bot: Bot):
     await state.update_data(name=message.text)
+
     async with async_session() as db_session:
         async with db_session.begin():
+
             stmt = select(User).filter(User.members == message.text)
             result = await db_session.execute(stmt)
             user = result.scalars().first()
+
             if user:
                 await message.answer('Вы успешно авторизованы и приняты в группу!')
                 await bot.approve_chat_join_request(-1002216392125, message.from_user.id)
