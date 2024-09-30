@@ -1,3 +1,4 @@
+#Запросы к базе данных
 from app.database.models import async_session
 from app.database.models import User
 
@@ -22,7 +23,7 @@ async def fetch_clan_members(session):
     async with session.get(url, headers=headers) as response:
         return await response.json()
 
-
+#Обновление базы данных
 async def update_database():
     async with aiohttp.ClientSession() as session:
         print('База данных обновлена')
